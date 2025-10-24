@@ -9,7 +9,9 @@ import (
 	"github.com/Valentin-Makurin/gophermart/internal/auth"
 )
 
-const UserIDKey string = "user_id"
+type contextKey string
+
+const UserIDKey contextKey = "user_id"
 
 func AuthMiddleware(jwtManager *auth.JWTManager) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
