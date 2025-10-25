@@ -18,7 +18,11 @@ func NewBalanceService(balanceRepo *postgres.BalanceRepository) *BalanceService 
 }
 
 func (s *BalanceService) GetBalance(ctx context.Context, userID int64) (*models.Balance, error) {
-	return s.balanceRepo.GetUserBalance(ctx, userID)
+	balance, err := s.balanceRepo.GetUserBalance(ctx, userID)
+	if err == nil {
+		balance.Current = balance.Current - balance.Withdrawn
+	}
+	return balance, err
 }
 
 func (s *BalanceService) Withdraw(ctx context.Context, userID int64, req *models.WithdrawalRequest) error {
