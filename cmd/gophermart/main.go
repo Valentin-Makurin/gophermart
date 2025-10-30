@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"database/sql"
 
 	"github.com/Valentin-Makurin/gophermart/internal/auth"
 	"github.com/Valentin-Makurin/gophermart/internal/config"
@@ -14,7 +17,13 @@ import (
 	"github.com/Valentin-Makurin/gophermart/internal/service"
 	"github.com/Valentin-Makurin/gophermart/internal/service/accrual"
 	"github.com/go-chi/chi/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
+
+	// "github.com/jackc/pgx"
+	// "embed"
+
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/pressly/goose/v3"
 	"go.uber.org/zap"
 )
 
@@ -38,11 +47,15 @@ func main() {
 		sugar.Error("Unable to ping database: %v", err)
 	}
 
-	migrRepo := postgres.NewMigrRepository(db)
-	err = migrRepo.RunMigrations()
-	if err != nil {
-		sugar.Error("Failed to run migr %v", err)
+	if err := runMigrations(cfg.DatabaseURI); err != nil {
+		sugar.Error("Failed to run migrations: %v", err)
 	}
+
+	// migrRepo := postgres.NewMigrRepository(db)
+	// err = migrRepo.RunMigrations()
+	// if err != nil {
+	// 	sugar.Error("Failed to run migr %v", err)
+	// }
 
 	userRepo := postgres.NewUserRepository(db)
 	orderRepo := postgres.NewOrderRepository(db)
@@ -99,3 +112,43 @@ func main() {
 	}
 
 }
+
+func runMigrations(databaseURI string) error {
+	// var migrationsFS embed.FS
+
+	db, err := sql.Open("pgx", databaseURI)
+	if err != nil {
+		return err
+	}
+
+	defer db.Close()
+
+	// if _, err := os.Stat("migrations"); os.IsNotExist(err) {
+	// 	return fmt.Errorf("migrations directory does not exist at: %s. Current working directory: %s",
+	// 		"migrations", getWorkingDir())
+	// }
+
+	// Проверяем соединение
+	if err := db.Ping(); err != nil {
+		return fmt.Errorf("failed to ping database: %w", err)
+	}
+	// goose.SetBaseFS(migrationsFS)
+
+	// Устанавливаем диалект
+	if err := goose.SetDialect("postgres"); err != nil {
+		return fmt.Errorf("failed to set dialect: %w", err)
+	}
+
+	// Выполняем миграции
+	if err := goose.Up(db, "migrations"); err != nil {
+		return fmt.Errorf("failed to run migrations: %w", err)
+	}
+
+	// log.Println("Database migrations applied successfully")
+	return nil
+}
+
+// func getWorkingDir() string {
+// 	dir, _ := os.Getwd()
+// 	return dir
+// }
