@@ -2,17 +2,19 @@ package service
 
 import (
 	"context"
+
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService struct {
-	userRepo *postgres.UserRepository
+	userRepo repository.UserRepository
 }
 
-func NewAuthService(userRepo *postgres.UserRepository) *AuthService {
+func NewAuthService(userRepo repository.UserRepository) *AuthService {
 	return &AuthService{
 		userRepo: userRepo,
 	}

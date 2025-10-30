@@ -7,17 +7,18 @@ import (
 
 	"github.com/Valentin-Makurin/gophermart/internal/common"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
-	"github.com/Valentin-Makurin/gophermart/internal/service/accrual"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
+	// "github.com/Valentin-Makurin/gophermart/internal/service/accrual"
 )
 
 type OrderService struct {
-	orderRepo     *postgres.OrderRepository
-	balanceRepo   *postgres.BalanceRepository
-	accrualClient *accrual.Client
+	orderRepo     repository.OrderRepository
+	balanceRepo   repository.BalanceRepository
+	accrualClient repository.Client
 }
 
-func NewOrderService(orderRepo *postgres.OrderRepository, balanceRepo *postgres.BalanceRepository, accrualClient *accrual.Client) *OrderService {
+func NewOrderService(orderRepo repository.OrderRepository, balanceRepo repository.BalanceRepository, accrualClient repository.Client) *OrderService {
 	return &OrderService{
 		orderRepo:     orderRepo,
 		balanceRepo:   balanceRepo,

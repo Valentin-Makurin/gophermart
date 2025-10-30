@@ -49,12 +49,10 @@ func main() {
 	balanceRepo := postgres.NewBalanceRepository(db)
 
 	authService := service.NewAuthService(userRepo)
-	jwtManager := auth.NewJWTManager("12345")
+	jwtManager := auth.NewJWTManager(cfg.JWTKey)
 
 	accrualClient := accrual.NewClient(cfg.AccrualSystemAddress)
 	orderService := service.NewOrderService(orderRepo, balanceRepo, accrualClient)
-	// orderService := service.NewOrderService(orderRepo)
-
 	balanceService := service.NewBalanceService(balanceRepo)
 
 	authHandler := handlers.NewAuthHandler(authService, jwtManager)

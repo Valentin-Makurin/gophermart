@@ -7,14 +7,15 @@ import (
 
 	"github.com/Valentin-Makurin/gophermart/internal/middleware"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/service"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/service"
 )
 
 type OrdersHandler struct {
-	orderService *service.OrderService
+	orderService repository.OrderService
 }
 
-func NewOrdersHandler(orderService *service.OrderService) *OrdersHandler {
+func NewOrdersHandler(orderService repository.OrderService) *OrdersHandler {
 	return &OrdersHandler{
 		orderService: orderService,
 	}

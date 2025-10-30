@@ -6,14 +6,15 @@ import (
 
 	"github.com/Valentin-Makurin/gophermart/internal/middleware"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/service"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/service"
 )
 
 type BalanceHandler struct {
-	balanceService *service.BalanceService
+	balanceService repository.BalanceService
 }
 
-func NewBalanceHandler(balanceService *service.BalanceService) *BalanceHandler {
+func NewBalanceHandler(balanceService repository.BalanceService) *BalanceHandler {
 	return &BalanceHandler{
 		balanceService: balanceService,
 	}

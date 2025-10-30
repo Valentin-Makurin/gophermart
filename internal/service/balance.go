@@ -4,14 +4,15 @@ import (
 	"context"
 
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
 )
 
 type BalanceService struct {
-	balanceRepo *postgres.BalanceRepository
+	balanceRepo repository.BalanceRepository
 }
 
-func NewBalanceService(balanceRepo *postgres.BalanceRepository) *BalanceService {
+func NewBalanceService(balanceRepo repository.BalanceRepository) *BalanceService {
 	return &BalanceService{
 		balanceRepo: balanceRepo,
 	}

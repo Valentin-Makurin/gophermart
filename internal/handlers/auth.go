@@ -5,19 +5,20 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Valentin-Makurin/gophermart/internal/auth"
+	// "github.com/Valentin-Makurin/gophermart/internal/auth"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/service"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/service"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type AuthHandler struct {
-	authService *service.AuthService
-	jwtManager  *auth.JWTManager
+	authService repository.AuthService
+	jwtManager  repository.JWTManager
 }
 
-func NewAuthHandler(authService *service.AuthService, jwtManager *auth.JWTManager) *AuthHandler {
+func NewAuthHandler(authService repository.AuthService, jwtManager repository.JWTManager) *AuthHandler {
 	return &AuthHandler{
 		authService: authService,
 		jwtManager:  jwtManager,

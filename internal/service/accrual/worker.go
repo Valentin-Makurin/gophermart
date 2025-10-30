@@ -7,17 +7,18 @@ import (
 
 	"github.com/Valentin-Makurin/gophermart/internal/common"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
-	"github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
+	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
+	// "github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
 )
 
 type Worker struct {
-	orderRepo     *postgres.OrderRepository
-	balanceRepo   *postgres.BalanceRepository
+	orderRepo     repository.OrderRepository
+	balanceRepo   repository.BalanceRepository
 	accrualClient *Client
 	interval      time.Duration
 }
 
-func NewWorker(orderRepo *postgres.OrderRepository, balanceRepo *postgres.BalanceRepository, accrualClient *Client, interval time.Duration) *Worker {
+func NewWorker(orderRepo repository.OrderRepository, balanceRepo repository.BalanceRepository, accrualClient *Client, interval time.Duration) *Worker {
 	return &Worker{
 		orderRepo:     orderRepo,
 		balanceRepo:   balanceRepo,
