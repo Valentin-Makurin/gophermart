@@ -7,7 +7,6 @@ import (
 	"github.com/Valentin-Makurin/gophermart/internal/middleware"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
 	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
-	// "github.com/Valentin-Makurin/gophermart/internal/service"
 )
 
 type BalanceHandler struct {

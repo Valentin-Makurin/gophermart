@@ -10,7 +10,6 @@ import (
 type UserRepository interface {
 	CreateUser(ctx context.Context, user *models.User) error
 	GetUserByLogin(ctx context.Context, login string) (*models.User, error)
-	// GetUserByID(ctx context.Context, id int64) (*models.User, error)
 }
 
 type OrderRepository interface {

@@ -5,10 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	// "github.com/Valentin-Makurin/gophermart/internal/auth"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
 	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
-	// "github.com/Valentin-Makurin/gophermart/internal/service"
 
 	"github.com/go-chi/chi/v5"
 )

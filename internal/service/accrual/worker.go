@@ -8,7 +8,6 @@ import (
 	"github.com/Valentin-Makurin/gophermart/internal/common"
 	"github.com/Valentin-Makurin/gophermart/internal/models"
 	repository "github.com/Valentin-Makurin/gophermart/internal/repo"
-	// "github.com/Valentin-Makurin/gophermart/internal/repo/postgres"
 )
 
 type Worker struct {
