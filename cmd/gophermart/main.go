@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"database/sql"
@@ -173,8 +176,15 @@ func runMigrations(databaseURI string) error {
 		return fmt.Errorf("failed to create migration driver: %w", err)
 	}
 
+	migrationsPath, err := getMigrationsPath()
+	if err != nil {
+		return fmt.Errorf("failed to get migrations path: %w", err)
+	}
+
+	log.Printf("Migrations path: %s", migrationsPath)
+
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
+		"file://"+migrationsPath,
 		"postgres", driver)
 	if err != nil {
 		return fmt.Errorf("failed to create migration instance: %w", err)
@@ -186,4 +196,28 @@ func runMigrations(databaseURI string) error {
 
 	log.Println("Database migrations applied successfully")
 	return nil
+}
+
+func getMigrationsPath() (string, error) {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		return "", fmt.Errorf("failed to get current file path")
+	}
+
+	currentDir := filepath.Dir(filename)
+
+	migrationsPath := filepath.Join(currentDir, "migrations")
+
+	if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
+		// Пробуем найти на уровень выше (для структуры cmd/gophermart/)
+		parentDir := filepath.Dir(currentDir)
+		migrationsPath = filepath.Join(parentDir, "migrations")
+
+		if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
+			return "", fmt.Errorf("migrations directory not found in: %s or %s",
+				filepath.Join(currentDir, "migrations"), migrationsPath)
+		}
+	}
+
+	return migrationsPath, nil
 }
