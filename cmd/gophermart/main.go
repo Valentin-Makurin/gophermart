@@ -23,8 +23,12 @@ import (
 	// "embed"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/pressly/goose/v3"
+	// "github.com/pressly/goose/v3"
 	"go.uber.org/zap"
+
+	"github.com/golang-migrate/migrate/v4"
+	mgPostgres "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
@@ -113,42 +117,73 @@ func main() {
 
 }
 
-func runMigrations(databaseURI string) error {
-	// var migrationsFS embed.FS
+// func runMigrations(databaseURI string) error {
+// 	// var migrationsFS embed.FS
 
+// 	db, err := sql.Open("pgx", databaseURI)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	defer db.Close()
+
+// 	// if _, err := os.Stat("migrations"); os.IsNotExist(err) {
+// 	// 	return fmt.Errorf("migrations directory does not exist at: %s. Current working directory: %s",
+// 	// 		"migrations", getWorkingDir())
+// 	// }
+
+// 	// Проверяем соединение
+// 	if err := db.Ping(); err != nil {
+// 		return fmt.Errorf("failed to ping database: %w", err)
+// 	}
+// 	// goose.SetBaseFS(migrationsFS)
+
+// 	// Устанавливаем диалект
+// 	if err := goose.SetDialect("postgres"); err != nil {
+// 		return fmt.Errorf("failed to set dialect: %w", err)
+// 	}
+
+// 	// Выполняем миграции
+// 	if err := goose.Up(db, "migrations"); err != nil {
+// 		return fmt.Errorf("failed to run migrations: %w", err)
+// 	}
+
+// 	// log.Println("Database migrations applied successfully")
+// 	return nil
+// }
+
+// // func getWorkingDir() string {
+// // 	dir, _ := os.Getwd()
+// // 	return dir
+// // }
+
+func runMigrations(databaseURI string) error {
 	db, err := sql.Open("pgx", databaseURI)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to connect for migrations: %w", err)
 	}
-
 	defer db.Close()
 
-	// if _, err := os.Stat("migrations"); os.IsNotExist(err) {
-	// 	return fmt.Errorf("migrations directory does not exist at: %s. Current working directory: %s",
-	// 		"migrations", getWorkingDir())
-	// }
-
-	// Проверяем соединение
 	if err := db.Ping(); err != nil {
 		return fmt.Errorf("failed to ping database: %w", err)
 	}
-	// goose.SetBaseFS(migrationsFS)
 
-	// Устанавливаем диалект
-	if err := goose.SetDialect("postgres"); err != nil {
-		return fmt.Errorf("failed to set dialect: %w", err)
+	driver, err := mgPostgres.WithInstance(db, &mgPostgres.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to create migration driver: %w", err)
 	}
 
-	// Выполняем миграции
-	if err := goose.Up(db, "migrations"); err != nil {
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://migrations",
+		"postgres", driver)
+	if err != nil {
+		return fmt.Errorf("failed to create migration instance: %w", err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 
-	// log.Println("Database migrations applied successfully")
+	log.Println("Database migrations applied successfully")
 	return nil
 }
-
-// func getWorkingDir() string {
-// 	dir, _ := os.Getwd()
-// 	return dir
-// }

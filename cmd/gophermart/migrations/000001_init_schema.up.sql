@@ -1,5 +1,4 @@
-	
--- +goose Up
+
 CREATE SCHEMA IF NOT EXISTS mvv;
 
 CREATE TABLE IF NOT EXISTS mvv.order_statuses (
@@ -56,5 +55,3 @@ INSERT INTO mvv.operation_types (code, description) VALUES
 ('ACCRUAL', 'Начисление баллов лояльности за заказ'),
 ('WITHDRAWAL', 'Списание баллов для оплаты заказа')
 ON CONFLICT (code) DO NOTHING;
-
--- +goose Down
